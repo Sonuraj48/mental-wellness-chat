@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Wellness Chat</title>
+    <style>
+      body {
+        font-family: Arial;
+        margin: 20px;
+        background: #f3f6fa;
+      }
+      #chat-box {
+        height: 400px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        padding: 10px;
+        background: #fff;
+      }
+      .user {
+        color: blue;
+      }
+      .bot {
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>🌸 Youth Mental Wellness Chat</h2>
+    <div>
+      Personality:
+      <select id="personality">
+        <option value="friend">Friend</option>
+        <option value="girlfriend">Girlfriend</option>
+        <option value="mentor">Mentor</option>
+      </select>
+    </div>
+    <div id="chat-box"></div>
+    <input type="text" id="message" placeholder="Type your feelings..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+      const user_id = "user1";
+      async function sendMessage() {
+        const message = document.getElementById("message").value;
+        const personality = document.getElementById("personality").value;
+
+        document.getElementById(
+          "chat-box"
+        ).innerHTML += `<p class="user"><b>You:</b> ${message}</p>`;
+
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id, message, personality }),
+        });
+        const data = await res.json();
+
+        document.getElementById(
+          "chat-box"
+        ).innerHTML += `<p class="bot"><b>${personality}:</b> ${data.reply}</p>`;
+        document.getElementById("message").value = "";
+      }
+    </script>
+  </body>
+</html>
