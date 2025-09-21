@@ -17,9 +17,14 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
+      - name: Build and Push Docker image
+        run: |
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/mental-wellness-chat .
+
       - name: Deploy to Cloud Run
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: mental-wellness-chat
-          region: asia-south1
-          source: .
+        run: |
+          gcloud run deploy mental-wellness-chat \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/mental-wellness-chat \
+            --region asia-south1 \
+            --platform managed \
+            --allow-unauthenticated
